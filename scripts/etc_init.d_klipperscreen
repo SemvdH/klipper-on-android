@@ -1,0 +1,53 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          klipperscreen
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start KlipperScreen service
+# Description:       This file starts and stops KlipperScreen.
+### END INIT INFO
+
+NAME=klipperscreen
+USER=android
+KS_DIR="/home/android/KlipperScreen"
+KS_EXEC="$KS_DIR/scripts/KlipperScreen-start.sh"
+PIDFILE="/var/run/$NAME.pid"
+
+. /lib/lsb/init-functions
+
+start() {
+    log_daemon_msg "Starting KlipperScreen service"
+    start-stop-daemon --start --background --pidfile $PIDFILE --make-pidfile --chuid $USER --exec $KS_EXEC \
+    >> /home/android/printer_data/logs/klipperscreen.log 2>&1 # 2>&1 means redirect stderr to stdout
+    log_end_msg $?
+}
+
+stop() {
+    log_daemon_msg "Stopping KlipperScreen service"
+    start-stop-daemon --stop --quiet --pidfile $PIDFILE --retry 5
+    log_end_msg $?
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart|reload|force-reload)
+        stop
+        start
+        ;;
+    status)
+        status_of_proc "$KS_EXEC" "$NAME" && exit 0 || exit $?
+        ;;
+    *)
+        echo "Usage: /etc/init.d/klipperscreen {start|stop|restart|status}"
+        exit 1
+        ;;
+esac
+
+exit 0

@@ -68,18 +68,26 @@
     sudo chmod 777 /dev/ttyUSB0
     # or 
     sudo chmod 777 /home/android/octo4a/serialpipe
+    sudo chown -R android:android /home/android/octo4a
     ```
+- Make sure the moonraker config is correct `/home/android/printer_data/config/moonraker.conf`:
+  - set the correct socket path: `klippy_uds_address: /home/android/printer_data/comms/klippy.sock`
+  - change the provider under the `[machine]` section because we're using SysVinit: `provider: none`
 - Install the init and xterm scripts from this gist:  
   ```bash
   sudo wget -O /etc/default/klipper https://raw.githubusercontent.com/d4rk50ul1/klipper-on-android/main/scripts/etc_default_klipper
   sudo wget -O /etc/init.d/klipper https://raw.githubusercontent.com/d4rk50ul1/klipper-on-android/main/scripts/etc_init.d_klipper
+  sudo wget -O /etc/init.d/klipperscreen https://raw.githubusercontent.com/d4rk50ul1/klipper-on-android/main/scripts/etc_init.d_klipperscreen
   sudo wget -O /etc/default/moonraker https://raw.githubusercontent.com/d4rk50ul1/klipper-on-android/main/scripts/etc_default_moonraker
   sudo wget -O /etc/init.d/moonraker https://raw.githubusercontent.com/d4rk50ul1/klipper-on-android/main/scripts/etc_init.d_moonraker
   sudo wget -O /usr/local/bin/xterm https://raw.githubusercontent.com/d4rk50ul1/klipper-on-android/main/scripts/usr_local_bin_xterm
-  
+  sudo wget -O /home/android/KlipperScreen/scripts/launch_KlipperScreen.sh https://raw.githubusercontent.com/d4rk50ul1/klipper-on-android/main/scripts/home_android_KlipperScreen_scripts_launch_Klipperscreen.sh
+
   sudo chmod +x /etc/init.d/klipper 
+  sudo chmod +x /etc/init.d/klipperscreen
   sudo chmod +x /etc/init.d/moonraker 
   sudo chmod +x /usr/local/bin/xterm
+  sudo chmod +x /home/android/KlipperScreen/scripts/launch_KlipperScreen.sh
   
   sudo update-rc.d klipper defaults
   sudo update-rc.d moonraker defaults
